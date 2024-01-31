@@ -59,4 +59,26 @@ export class AppController {
       channel.ack(originalMsg);
     }
   }
+
+  @EventPattern('atualizar-categoria')
+  async atualizarCategoria(@Payload() data: any, @Ctx() context: RmqContext) {
+    const channel = context.getChannelRef();
+    const originalMsg = context.getMessage();
+
+    this.logger.log(`data ${JSON.stringify(data)}`);
+    try {
+      const _id: string = data.id;
+      const categoria: Categoria = data.categoria;
+      await this.appService.atualizarCategoria(_id, categoria);
+      channel.ack(originalMsg);
+    } catch (error) {
+      const filterAckError = ackErrors.filter((ackError) => {
+        error.message.includes(ackError);
+      });
+
+      if (filterAckError) {
+        channel.ack(originalMsg);
+      }
+    }
+  }
 }
