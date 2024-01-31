@@ -31,11 +31,13 @@ export class AppController {
       channel.ack(originalMsg);
     } catch (error) {
       this.logger.error(`error: ${JSON.stringify(error.message)}`);
-      ackErrors.map((ackError) => {
-        if (error.message.includes(ackError)) {
-          channel.ack(originalMsg);
-        }
+      const filterAckError = ackErrors.filter((ackError) => {
+        error.message.includes(ackError);
       });
+
+      if (filterAckError) {
+        channel.ack(originalMsg);
+      }
     }
   }
 
@@ -47,12 +49,14 @@ export class AppController {
     const channel = context.getChannelRef();
     const originalMsg = context.getMessage();
 
-    channel.ack(originalMsg);
-
-    if (_id) {
-      return await this.appService.consultaCategoriaPeloId(_id);
-    } else {
-      return await this.appService.consultarTodasCategorias();
+    try {
+      if (_id) {
+        return await this.appService.consultaCategoriaPeloId(_id);
+      } else {
+        return await this.appService.consultarTodasCategorias();
+      }
+    } finally {
+      channel.ack(originalMsg);
     }
   }
 }
