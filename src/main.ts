@@ -9,6 +9,7 @@ async function bootstrap() {
       urls: [
         process.env.AMQPS
       ],
+      noAck: false,
       queue: 'admin-backend',
     },
   });
