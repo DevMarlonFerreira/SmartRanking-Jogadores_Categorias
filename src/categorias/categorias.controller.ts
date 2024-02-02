@@ -29,7 +29,7 @@ export class CategoriasController {
 
     try {
       await this.categoriasService.criarCategoria(categoria);
-      await channel.ack(originalMsg);
+      channel.ack(originalMsg);
     } catch (error) {
       this.logger.error(`error: ${JSON.stringify(error.message)}`);
 
@@ -38,7 +38,7 @@ export class CategoriasController {
       );
 
       if (filterAckError.length > 0) {
-        await channel.ack(originalMsg);
+        channel.ack(originalMsg);
       }
     }
   }
@@ -57,7 +57,7 @@ export class CategoriasController {
         return await this.categoriasService.consultarTodasCategorias();
       }
     } finally {
-      await channel.ack(originalMsg);
+      channel.ack(originalMsg);
     }
   }
 
@@ -70,14 +70,14 @@ export class CategoriasController {
       const _id: string = data.id;
       const categoria: Categoria = data.categoria;
       await this.categoriasService.atualizarCategoria(_id, categoria);
-      await channel.ack(originalMsg);
+      channel.ack(originalMsg);
     } catch (error) {
       const filterAckError = ackErrors.filter((ackError) =>
         error.message.includes(ackError),
       );
 
       if (filterAckError.length > 0) {
-        await channel.ack(originalMsg);
+        channel.ack(originalMsg);
       }
     }
   }

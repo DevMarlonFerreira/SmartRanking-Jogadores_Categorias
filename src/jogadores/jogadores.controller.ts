@@ -23,7 +23,7 @@ export class JogadoresController {
     try {
       this.logger.log(`jogador: ${JSON.stringify(jogador)}`);
       await this.jogadoresService.criarJogador(jogador);
-      await channel.ack(originalMsg);
+      channel.ack(originalMsg);
     } catch (error) {
       this.logger.log(`error: ${JSON.stringify(error.message)}`);
       const filterAckError = ackErrors.filter((ackError) =>
@@ -31,7 +31,7 @@ export class JogadoresController {
       );
 
       if (filterAckError.length > 0) {
-        await channel.ack(originalMsg);
+        channel.ack(originalMsg);
       }
     }
   }
@@ -47,7 +47,7 @@ export class JogadoresController {
         return await this.jogadoresService.consultarTodosJogadores();
       }
     } finally {
-      await channel.ack(originalMsg);
+      channel.ack(originalMsg);
     }
   }
 
@@ -60,14 +60,14 @@ export class JogadoresController {
       const _id: string = data.id;
       const jogador: Jogador = data.jogador;
       await this.jogadoresService.atualizarJogador(_id, jogador);
-      await channel.ack(originalMsg);
+      channel.ack(originalMsg);
     } catch (error) {
       const filterAckError = ackErrors.filter((ackError) =>
         error.message.includes(ackError),
       );
 
       if (filterAckError.length > 0) {
-        await channel.ack(originalMsg);
+        channel.ack(originalMsg);
       }
     }
   }
@@ -78,14 +78,14 @@ export class JogadoresController {
     const originalMsg = context.getMessage();
     try {
       await this.jogadoresService.deletarJogador(_id);
-      await channel.ack(originalMsg);
+      channel.ack(originalMsg);
     } catch (error) {
       const filterAckError = ackErrors.filter((ackError) =>
         error.message.includes(ackError),
       );
 
       if (filterAckError.length > 0) {
-        await channel.ack(originalMsg);
+        channel.ack(originalMsg);
       }
     }
   }
