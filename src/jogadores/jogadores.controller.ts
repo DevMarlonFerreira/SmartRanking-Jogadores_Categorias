@@ -56,7 +56,6 @@ export class JogadoresController {
     const channel = context.getChannelRef();
     const originalMsg = context.getMessage();
     try {
-      console.log(`data: ${JSON.stringify(data)}`);
       const _id: string = data.id;
       const jogador: Jogador = data.jogador;
       await this.jogadoresService.atualizarJogador(_id, jogador);
