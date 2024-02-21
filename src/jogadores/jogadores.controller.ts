@@ -24,14 +24,19 @@ export class JogadoresController {
       this.logger.log(`jogador: ${JSON.stringify(jogador)}`);
       await this.jogadoresService.criarJogador(jogador);
       channel.ack(originalMsg);
-    } catch (error) {
-      this.logger.log(`error: ${JSON.stringify(error.message)}`);
-      const filterAckError = ackErrors.filter((ackError) =>
-        error.message.includes(ackError),
-      );
+    } catch (error: unknown) {
+      const err = error as Error;
+      if (err) {
+        this.logger.log(`error: ${JSON.stringify(err.message)}`);
+        const filterAckError = ackErrors.filter((ackError) =>
+          err.message.includes(ackError),
+        );
 
-      if (filterAckError.length > 0) {
-        channel.ack(originalMsg);
+        if (filterAckError.length > 0) {
+          channel.ack(originalMsg);
+        }
+      } else {
+        this.logger.error(`unknown error: ${JSON.stringify(error)}`);
       }
     }
   }
@@ -60,13 +65,17 @@ export class JogadoresController {
       const jogador: Jogador = data.jogador;
       await this.jogadoresService.atualizarJogador(_id, jogador);
       channel.ack(originalMsg);
-    } catch (error) {
-      const filterAckError = ackErrors.filter((ackError) =>
-        error.message.includes(ackError),
-      );
-
-      if (filterAckError.length > 0) {
-        channel.ack(originalMsg);
+    } catch (error: unknown) {
+      const err = error as Error;
+      if (err) {
+        const filterAckError = ackErrors.filter((ackError) =>
+          err.message.includes(ackError),
+        );
+        if (filterAckError.length > 0) {
+          channel.ack(originalMsg);
+        }
+      } else {
+        this.logger.error(`unknown error: ${JSON.stringify(error)}`);
       }
     }
   }
@@ -78,13 +87,17 @@ export class JogadoresController {
     try {
       await this.jogadoresService.deletarJogador(_id);
       channel.ack(originalMsg);
-    } catch (error) {
-      const filterAckError = ackErrors.filter((ackError) =>
-        error.message.includes(ackError),
-      );
-
-      if (filterAckError.length > 0) {
-        channel.ack(originalMsg);
+    } catch (error: unknown) {
+      const err = error as Error;
+      if (err) {
+        const filterAckError = ackErrors.filter((ackError) =>
+          err.message.includes(ackError),
+        );
+        if (filterAckError.length > 0) {
+          channel.ack(originalMsg);
+        }
+      } else {
+        this.logger.error(`unknown error: ${JSON.stringify(error)}`);
       }
     }
   }

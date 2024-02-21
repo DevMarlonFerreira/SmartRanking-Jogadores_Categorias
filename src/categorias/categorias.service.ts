@@ -16,27 +16,42 @@ export class CategoriasService {
     try {
       const categoriaCriada = new this.categoriaModel(categoria);
       await categoriaCriada.save();
-    } catch (error) {
-      this.logger.error(`error: ${JSON.stringify(error.message)}`);
-      throw new RpcException(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        this.logger.error(`error: ${JSON.stringify(error.message)}`);
+        throw new RpcException(error.message);
+      } else {
+        this.logger.error(`unknown error: ${JSON.stringify(error)}`);
+        throw new RpcException(`unknown error`);
+      }
     }
   }
 
   async consultarTodasCategorias(): Promise<Categoria[]> {
     try {
       return await this.categoriaModel.find().lean().exec();
-    } catch (error) {
-      this.logger.error(`error: ${JSON.stringify(error.message)}`);
-      throw new RpcException(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        this.logger.error(`error: ${JSON.stringify(error.message)}`);
+        throw new RpcException(error.message);
+      } else {
+        this.logger.error(`unknown error: ${JSON.stringify(error)}`);
+        throw new RpcException(`unknown error`);
+      }
     }
   }
 
   async consultarCategoriaPeloId(_id: string): Promise<Categoria> {
     try {
       return await this.categoriaModel.findOne({ _id }).lean().exec();
-    } catch (error) {
-      this.logger.error(`error: ${JSON.stringify(error.message)}`);
-      throw new RpcException(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        this.logger.error(`error: ${JSON.stringify(error.message)}`);
+        throw new RpcException(error.message);
+      } else {
+        this.logger.error(`unknown error: ${JSON.stringify(error)}`);
+        throw new RpcException(`unknown error`);
+      }
     }
   }
 
@@ -45,9 +60,14 @@ export class CategoriasService {
       await this.categoriaModel
         .findOneAndUpdate({ _id }, { $set: categoria })
         .exec();
-    } catch (error) {
-      this.logger.error(`error: ${JSON.stringify(error.message)}`);
-      throw new RpcException(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        this.logger.error(`error: ${JSON.stringify(error.message)}`);
+        throw new RpcException(error.message);
+      } else {
+        this.logger.error(`unknown error: ${JSON.stringify(error)}`);
+        throw new RpcException(`unknown error`);
+      }
     }
   }
 }
